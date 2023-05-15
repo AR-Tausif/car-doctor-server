@@ -51,7 +51,20 @@ async function run() {
       //   console.log(result);
       res.send(result);
     });
-    app.post("/bookings", async (req, res) => {
+
+    app.get("/bookings", async (req, res) => {
+      const body = req.body;
+      console.log(req.query.email);
+      let query = {};
+      if(req.query?.email){
+        query= {email: req.query.email}
+      }
+      const result = await bookingCollection.find(query).toArray();
+      //   console.log(result);
+      res.send(result);
+    });
+
+     app.post("/bookings", async (req, res) => {
       const body = req.body;
       console.log(body);
 
@@ -59,13 +72,14 @@ async function run() {
       //   console.log(result);
       res.send(result);
     });
-    app.get("/bookings", async (req, res) => {
-      const body = req.body;
-      console.log(body);
-      const result = await bookingCollection.find().toArray();
-      //   console.log(result);
-      res.send(result);
-    });
+
+     app.delete("/bookings/:id", async (req, res)=>{
+      const id = req.params.id;
+      console.log(id)
+      const query = {_id: new ObjectId(id)}
+      const result = await bookingCollection.deleteOne(query)
+      res.send(result)
+     })
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
